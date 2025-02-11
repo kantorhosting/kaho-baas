@@ -4,13 +4,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"Kaho_BaaS/internal/database"
+	"Kaho_BaaS/internal/pkg/sessionmanager"
 )
 
 type FiberServer struct {
 	*fiber.App
 
-	db     database.Service
-	gormDB database.ServiceGorm
+	db             database.Service
+	gormDB         database.ServiceGorm
+	sessionmanager *sessionmanager.SessionManager
 }
 
 func New() *FiberServer {
@@ -25,8 +27,9 @@ func New() *FiberServer {
 			AppName:      "Kaho_BaaS",
 		}),
 
-		db:     database.New(),
-		gormDB: gormDB,
+		db:             database.New(),
+		gormDB:         gormDB,
+		sessionmanager: sessionmanager.NewSessionManager(),
 	}
 
 	return server

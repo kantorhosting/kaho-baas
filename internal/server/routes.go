@@ -23,7 +23,7 @@ func (s *FiberServer) RegisterFiberRoutes() {
 	v1 := s.App.Group("/v1")
 
 	// Register routes
-	accountroutes.RegisterRoutes(v1, s.gormDB.DB())
+	accountroutes.RegisterRoutes(v1, s.gormDB.DB(), s.sessionmanager)
 
 	s.App.Get("/", s.HelloWorldHandler)
 
