@@ -7,7 +7,7 @@ import (
 func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	projectID := c.Get("X-Kaho-Project") // Ambil project ID dari header
 	if projectID == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "Project ID is required"})
+		return c.Status(400).JSON(fiber.Map{"error": "X-Kaho-Project is required"})
 	}
 
 	email := c.FormValue("email")
