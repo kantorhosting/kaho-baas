@@ -1,8 +1,11 @@
 package server
 
 import (
+	adminroutes "Kaho_BaaS/internal/apps/admin/routes"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func (s *FiberServer) RegisterFiberRoutes() {
@@ -14,6 +17,13 @@ func (s *FiberServer) RegisterFiberRoutes() {
 		AllowCredentials: false, // credentials require explicit origins
 		MaxAge:           300,
 	}))
+
+	s.App.Use(logger.New())
+
+	v1 := s.App.Group("/v1")
+
+	// Register routes
+	adminroutes.RegisterRoutes(v1)
 
 	s.App.Get("/", s.HelloWorldHandler)
 
