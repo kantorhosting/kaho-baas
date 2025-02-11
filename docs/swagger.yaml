@@ -1,0 +1,55 @@
+basePath: /v1
+info:
+  contact: {}
+  description: API documentation for Kaho BaaS
+  title: Kaho BaaS API Documentation
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Authenticate user credentials and start a user session.
+      parameters:
+      - description: Project ID
+        in: header
+        name: X-Kaho-Project
+        required: true
+        type: string
+      - description: User Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User Password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user for a project
+      tags:
+      - account
+swagger: "2.0"

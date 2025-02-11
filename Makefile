@@ -62,3 +62,11 @@ watch:
         fi
 
 .PHONY: all build run test clean watch docker-run docker-down itest
+
+swagger:
+	@echo "Generating Swagger documentation..."
+	@swag init -g cmd/api/main.go
+
+swagger-fmt:
+	@echo "Formatting Swagger documentation..."
+	@swag fmt

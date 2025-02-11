@@ -4,6 +4,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// LoginHandler godoc
+//	@Summary		Login user for a project
+//	@Description	Authenticate user credentials and start a user session.
+//	@Tags			account
+//	@Accept			application/x-www-form-urlencoded
+//	@Produce		json
+//	@Param			X-Kaho-Project	header		string					true	"Project ID"
+//	@Param			email			formData	string					true	"User Email"
+//	@Param			password		formData	string					true	"User Password"
+//	@Success		200				{object}	map[string]interface{}	"Login success response"
+//	@Failure		400				{object}	map[string]interface{}	"Bad request"
+//	@Failure		401				{object}	map[string]interface{}	"Invalid credentials"
+//	@Failure		500				{object}	map[string]interface{}	"Server error"
+//	@Router			/login [post]
 func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	projectID := c.Get("X-Kaho-Project") // Ambil project ID dari header
 	if projectID == "" {
