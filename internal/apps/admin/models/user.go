@@ -10,11 +10,11 @@ type HashOptions struct {
 }
 
 type Target struct {
-	ID           string    `gorm:"primaryKey;column:$id" json:"$id"`
+	ID           string    `gorm:"primaryKey;column:$id;type:uuid;default:gen_random_uuid()" json:"$id"`
 	CreatedAt    time.Time `gorm:"column:$createdAt" json:"$createdAt"`
 	UpdatedAt    time.Time `gorm:"column:$updatedAt" json:"$updatedAt"`
 	Name         string    `gorm:"type:varchar(255)" json:"name"`
-	UserID       string    `gorm:"type:varchar(255)" json:"userId"`
+	UserID       string    `gorm:"type:uuid" json:"userId"`
 	ProviderID   string    `gorm:"type:varchar(255)" json:"providerId"`
 	ProviderType string    `gorm:"type:varchar(255)" json:"providerType"`
 	Identifier   string    `gorm:"type:varchar(255)" json:"identifier"`
@@ -22,7 +22,7 @@ type Target struct {
 }
 
 type User struct {
-	ID                string      `gorm:"primaryKey;column:$id" json:"$id"`
+	ID                string      `gorm:"primaryKey;column:$id;type:uuid;default:gen_random_uuid()" json:"$id"`
 	CreatedAt         time.Time   `gorm:"column:$createdAt" json:"$createdAt"`
 	UpdatedAt         time.Time   `gorm:"column:$updatedAt" json:"$updatedAt"`
 	Name              string      `gorm:"type:varchar(255)" json:"name"`

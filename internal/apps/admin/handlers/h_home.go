@@ -8,9 +8,6 @@ import (
 
 func (s *adminHandler) AdminHomeHandler(c *fiber.Ctx) error {
 	var users []models.User
-	s.DB.AutoMigrate(&models.User{})
-	s.DB.AutoMigrate(&models.Target{})
-	s.DB.AutoMigrate(&models.HashOptions{})
 	result := s.DB.Find(&users)
 	if result.Error != nil {
 		return c.Status(500).JSON(fiber.Map{
