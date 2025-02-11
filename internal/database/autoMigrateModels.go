@@ -1,7 +1,7 @@
 package database
 
 import (
-	"Kaho_BaaS/internal/apps/admin/models"
+	"Kaho_BaaS/internal/apps/account/models"
 
 	"gorm.io/gorm"
 )

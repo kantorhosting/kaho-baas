@@ -1,7 +1,7 @@
 package server
 
 import (
-	adminroutes "Kaho_BaaS/internal/apps/admin/routes"
+	accountroutes "Kaho_BaaS/internal/apps/account/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -23,7 +23,7 @@ func (s *FiberServer) RegisterFiberRoutes() {
 	v1 := s.App.Group("/v1")
 
 	// Register routes
-	adminroutes.RegisterRoutes(v1, s.gormDB.DB())
+	accountroutes.RegisterRoutes(v1, s.gormDB.DB())
 
 	s.App.Get("/", s.HelloWorldHandler)
 
