@@ -5,6 +5,7 @@ import (
 )
 
 // LoginHandler godoc
+//
 //	@Summary		Login user for a project
 //	@Description	Authenticate user credentials and start a user session.
 //	@Tags			account
@@ -13,11 +14,11 @@ import (
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
 //	@Param			email			formData	string					true	"User Email"
 //	@Param			password		formData	string					true	"User Password"
-//	@Success		200				{object}	map[string]interface{}	"Login success response"
-//	@Failure		400				{object}	map[string]interface{}	"Bad request"
-//	@Failure		401				{object}	map[string]interface{}	"Invalid credentials"
+//	@Success		200				{object}	models.Session			"Login success response"
+//	@Failure		400				{object}	map[string]string		"X-Kaho-Project is required"
+//	@Failure		401				{object}	map[string]string		"Invalid credentials"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
-//	@Router			/login [post]
+//	@Router			/account/sessions/email [post]
 func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	projectID := c.Get("X-Kaho-Project") // Ambil project ID dari header
 	if projectID == "" {

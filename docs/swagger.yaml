@@ -1,11 +1,75 @@
 basePath: /v1
+definitions:
+  models.Session:
+    properties:
+      $createdAt:
+        type: string
+      $id:
+        type: string
+      $updatedAt:
+        type: string
+      clientCode:
+        type: string
+      clientEngine:
+        type: string
+      clientEngineVersion:
+        type: string
+      clientName:
+        type: string
+      clientType:
+        type: string
+      clientVersion:
+        type: string
+      countryCode:
+        type: string
+      countryName:
+        type: string
+      current:
+        type: boolean
+      deviceBrand:
+        type: string
+      deviceModel:
+        type: string
+      deviceName:
+        type: string
+      expire:
+        type: string
+      factors:
+        items:
+          type: string
+        type: array
+      ip:
+        type: string
+      mfaUpdatedAt:
+        type: string
+      osCode:
+        type: string
+      osName:
+        type: string
+      osVersion:
+        type: string
+      provider:
+        type: string
+      providerAccessToken:
+        type: string
+      providerAccessTokenExpiry:
+        type: string
+      providerRefreshToken:
+        type: string
+      providerUid:
+        type: string
+      secret:
+        type: string
+      userId:
+        type: string
+    type: object
 info:
   contact: {}
   description: API documentation for Kaho BaaS
   title: Kaho BaaS API Documentation
   version: "1.0"
 paths:
-  /login:
+  /account/sessions/email:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -32,17 +96,18 @@ paths:
         "200":
           description: Login success response
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.Session'
         "400":
-          description: Bad request
+          description: X-Kaho-Project is required
           schema:
-            additionalProperties: true
+            additionalProperties:
+              type: string
             type: object
         "401":
           description: Invalid credentials
           schema:
-            additionalProperties: true
+            additionalProperties:
+              type: string
             type: object
         "500":
           description: Server error

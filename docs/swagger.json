@@ -8,7 +8,7 @@
     },
     "basePath": "/v1",
     "paths": {
-        "/login": {
+        "/account/sessions/email": {
             "post": {
                 "description": "Authenticate user credentials and start a user session.",
                 "consumes": [
@@ -48,22 +48,25 @@
                     "200": {
                         "description": "Login success response",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.Session"
                         }
                     },
                     "400": {
-                        "description": "Bad request",
+                        "description": "X-Kaho-Project is required",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "401": {
                         "description": "Invalid credentials",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
@@ -73,6 +76,103 @@
                             "additionalProperties": true
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Session": {
+            "type": "object",
+            "properties": {
+                "$createdAt": {
+                    "type": "string"
+                },
+                "$id": {
+                    "type": "string"
+                },
+                "$updatedAt": {
+                    "type": "string"
+                },
+                "clientCode": {
+                    "type": "string"
+                },
+                "clientEngine": {
+                    "type": "string"
+                },
+                "clientEngineVersion": {
+                    "type": "string"
+                },
+                "clientName": {
+                    "type": "string"
+                },
+                "clientType": {
+                    "type": "string"
+                },
+                "clientVersion": {
+                    "type": "string"
+                },
+                "countryCode": {
+                    "type": "string"
+                },
+                "countryName": {
+                    "type": "string"
+                },
+                "current": {
+                    "type": "boolean"
+                },
+                "deviceBrand": {
+                    "type": "string"
+                },
+                "deviceModel": {
+                    "type": "string"
+                },
+                "deviceName": {
+                    "type": "string"
+                },
+                "expire": {
+                    "type": "string"
+                },
+                "factors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "ip": {
+                    "type": "string"
+                },
+                "mfaUpdatedAt": {
+                    "type": "string"
+                },
+                "osCode": {
+                    "type": "string"
+                },
+                "osName": {
+                    "type": "string"
+                },
+                "osVersion": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "providerAccessToken": {
+                    "type": "string"
+                },
+                "providerAccessTokenExpiry": {
+                    "type": "string"
+                },
+                "providerRefreshToken": {
+                    "type": "string"
+                },
+                "providerUid": {
+                    "type": "string"
+                },
+                "secret": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         }
