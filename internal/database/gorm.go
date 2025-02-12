@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"sync"
 
@@ -55,6 +56,11 @@ func ConnectDatabase() (*serviceGorm, error) {
 			err = dbErr
 			return
 		}
+		sqlDB, _ := DB.DB()
+
+		slog.Info("Success connected to database",
+			"stats", sqlDB.Stats(),
+		)
 
 		autoMigrateModels(DB)
 

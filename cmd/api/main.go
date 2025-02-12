@@ -11,6 +11,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "Kaho_BaaS/docs"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -38,10 +39,10 @@ func gracefulShutdown(fiberServer *server.FiberServer, done chan bool) {
 	done <- true
 }
 
-//	@title			Kaho BaaS API Documentation
-//	@version		1.0
-//	@description	API documentation for Kaho BaaS
-//	@BasePath		/v1
+// @title			Kaho BaaS API Documentation
+// @version		1.0
+// @description	API documentation for Kaho BaaS
+// @BasePath		/v1
 func main() {
 
 	server := server.New()

@@ -69,7 +69,7 @@ info:
   title: Kaho BaaS API Documentation
   version: "1.0"
 paths:
-  /account/sessions/email:
+  /account/sessions/login:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -96,7 +96,7 @@ paths:
         "200":
           description: Login success response
           schema:
-            $ref: '#/definitions/models.Session'
+            type: string
         "400":
           description: X-Kaho-Project is required
           schema:
@@ -115,6 +115,63 @@ paths:
             additionalProperties: true
             type: object
       summary: Login user for a project
+      tags:
+      - account
+  /account/sessions/register:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: Authenticate user credentials and start a user session.
+      parameters:
+      - description: Project ID
+        in: header
+        name: X-Kaho-Project
+        required: true
+        type: string
+      - description: User Email
+        in: formData
+        name: email
+        required: true
+        type: string
+      - description: User Password
+        in: formData
+        name: password
+        required: true
+        type: string
+      - description: User Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success response
+          schema:
+            type: string
+        "201":
+          description: Login success response
+          schema:
+            $ref: '#/definitions/models.Session'
+        "400":
+          description: X-Kaho-Project is required
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register user for a project
       tags:
       - account
 swagger: "2.0"

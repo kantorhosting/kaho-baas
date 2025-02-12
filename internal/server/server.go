@@ -23,8 +23,10 @@ func New() *FiberServer {
 
 	server := &FiberServer{
 		App: fiber.New(fiber.Config{
-			ServerHeader: "Kaho_BaaS",
-			AppName:      "Kaho_BaaS",
+			ServerHeader:  "Kaho_BaaS",
+			AppName:       "Kaho_BaaS",
+			StrictRouting: true,
+			CaseSensitive: true,
 		}),
 
 		db:             database.New(),

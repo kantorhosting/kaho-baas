@@ -25,6 +25,7 @@ type User struct {
 	ID                string      `gorm:"primaryKey;column:$id;type:uuid;default:gen_random_uuid()" json:"$id"`
 	CreatedAt         time.Time   `gorm:"column:$createdAt" json:"$createdAt"`
 	UpdatedAt         time.Time   `gorm:"column:$updatedAt" json:"$updatedAt"`
+	DeletedAt         time.Time   `gorm:"column:$deletedAt" json:"$deletedAt"`
 	Name              string      `gorm:"type:varchar(255)" json:"name"`
 	Password          string      `gorm:"type:text" json:"password"`
 	Hash              string      `gorm:"type:varchar(255)" json:"hash"`
@@ -41,4 +42,15 @@ type User struct {
 	Prefs             interface{} `gorm:"type:jsonb" json:"prefs"`
 	Targets           []Target    `gorm:"foreignKey:UserID" json:"targets"`
 	AccessedAt        time.Time   `gorm:"type:timestamp" json:"accessedAt"`
+}
+
+type Login struct {
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+}
+
+type Register struct {
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+	Name     string `json:"name" form:"name"`
 }
