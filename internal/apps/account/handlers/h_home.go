@@ -1,20 +1,21 @@
 package handlers
 
 import (
-	"Kaho_BaaS/internal/apps/account/models"
+	"context"
+	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func (s *accountHandler) AccountHomeHandler(c *fiber.Ctx) error {
-	var users []models.User
-	result := s.DB.Select("\"$id\", name, email, \"$createdAt\", \"$updatedAt\"").Find(&users)
-	if result.Error != nil {
-		return c.Status(500).JSON(fiber.Map{
-			"error": "Failed to fetch users",
-		})
+	ctx, cancel := context.WithTimeout(c.UserContext(), 1*time.Second)
+	defer cancel()
+
+	users, err := s.service.FindUsers(ctx)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to fetch users"})
 	}
-	return c.JSON(fiber.Map{
-		"users": users,
-	})
+
+	return c.JSON(fiber.Map{"users": users})
 }

@@ -14,7 +14,7 @@ func RegisterRoutes(router fiber.Router, db *gorm.DB, sessionManager *sessionman
 	accountGroup := router.Group("/account")
 	accountRepository := repositories.NewAccountRepository(db)
 	accountService := services.NewAccountService(accountRepository)
-	accountHandler := handlers.NewAccountHandler(accountService, db, sessionManager)
+	accountHandler := handlers.NewAccountHandler(accountService, sessionManager)
 
 	accountGroup.Get("/", accountHandler.AccountHomeHandler)
 	accountGroup.Post("/sessions/login", accountHandler.LoginHandler)

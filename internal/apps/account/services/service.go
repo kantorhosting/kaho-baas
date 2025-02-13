@@ -13,6 +13,7 @@ import (
 )
 
 type AccountService interface {
+	FindUsers(ctx context.Context) ([]models.User, error)
 	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
 	Register(ctx context.Context, data *models.Register) (*models.User, error)
 	Login(ctx context.Context, data *models.Login) (*models.User, error)
@@ -26,6 +27,20 @@ func NewAccountService(repository repositories.AccountRepository) AccountService
 	return &accountService{
 		repository: repository,
 	}
+}
+
+// FindUsers implements AccountService.
+func (as *accountService) FindUsers(ctx context.Context) ([]models.User, error) {
+	users, err := as.repository.FindUsers(ctx)
+	if err != nil {
+		slog.Error("Retrieve all users",
+			"err", err,
+		)
+
+		return []models.User{}, err
+	}
+
+	return users, nil
 }
 
 // FindUserByEmail implements AccountService.

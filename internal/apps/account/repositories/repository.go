@@ -8,6 +8,7 @@ import (
 )
 
 type AccountRepository interface {
+	FindUsers(ctx context.Context) ([]models.User, error)
 	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
 	Create(ctx context.Context, data *models.Register) (*models.User, error)
 }
@@ -20,6 +21,15 @@ func NewAccountRepository(db *gorm.DB) AccountRepository {
 	return &accountRepository{
 		db: db,
 	}
+}
+
+// FindUsers implements AccountRepository.
+func (as *accountRepository) FindUsers(ctx context.Context) ([]models.User, error) {
+	var users []models.User
+
+	result := as.db.WithContext(ctx).Debug().Find(&users)
+
+	return users, result.Error
 }
 
 // FindUserByEmail implements AccountService.
