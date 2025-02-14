@@ -2,6 +2,7 @@ package routes
 
 import (
 	"Kaho_BaaS/internal/apps/account/handlers"
+	"Kaho_BaaS/internal/apps/account/repositories"
 	"Kaho_BaaS/internal/apps/account/services"
 	"Kaho_BaaS/internal/pkg/sessionmanager"
 
@@ -11,9 +12,11 @@ import (
 
 func RegisterRoutes(router fiber.Router, db *gorm.DB, sessionManager *sessionmanager.SessionManager) {
 	accountGroup := router.Group("/account")
-	accountService := services.NewAccountService()
-	accountHandler := handlers.NewAccountHandler(accountService, db, sessionManager)
+	accountRepository := repositories.NewAccountRepository(db)
+	accountService := services.NewAccountService(accountRepository)
+	accountHandler := handlers.NewAccountHandler(accountService, sessionManager)
 
 	accountGroup.Get("/", accountHandler.AccountHomeHandler)
-	accountGroup.Post("/sessions/email", accountHandler.LoginHandler)
+	accountGroup.Post("/sessions/login", accountHandler.LoginHandler)
+	accountGroup.Post("/sessions/register", accountHandler.RegisterHandler)
 }
