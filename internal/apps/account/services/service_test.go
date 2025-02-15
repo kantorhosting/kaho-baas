@@ -17,7 +17,7 @@ import (
 var repository = &repositories.AccountRepositoryMock{Mock: mock.Mock{}}
 var service = accountService{repository: repository}
 
-func TestFindByEmail_NotFound(t *testing.T) {
+func TestFindUserByEmail_NotFound(t *testing.T) {
 	email := "test123@demo.com"
 	repository.Mock.On("FindUserByEmail", email).Return(nil)
 
@@ -28,7 +28,7 @@ func TestFindByEmail_NotFound(t *testing.T) {
 	assert.Nil(t, user)
 }
 
-func TestFindByEmail_Found(t *testing.T) {
+func TestFindUserByEmail_Found(t *testing.T) {
 	email := "john123@demo.com"
 	repository.Mock.On("FindUserByEmail", email).Return(models.User{
 		Email: email,
