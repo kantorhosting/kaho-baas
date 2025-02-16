@@ -3,6 +3,7 @@ package services
 import (
 	"Kaho_BaaS/internal/apps/account/models"
 	"Kaho_BaaS/internal/apps/account/repositories"
+	"Kaho_BaaS/internal/pkg/constants"
 	"Kaho_BaaS/internal/pkg/utils"
 	"context"
 	"errors"
@@ -59,14 +60,21 @@ func (as *accountService) FindUserByEmail(ctx context.Context, email string) (*m
 
 // Create implements AccountService.
 func (as *accountService) Register(ctx context.Context, data *models.Register) (*models.User, error) {
-	_, err := as.repository.FindUserByEmail(ctx, data.Email)
+	user, err := as.repository.FindUserByEmail(ctx, data.Email)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		slog.Error("User already exists",
+		slog.Error("Failed retrieve user",
 			"email", data.Email,
 			"err", err,
 		)
 
-		return nil, fmt.Errorf("User already exists")
+		return nil, constants.ErrInternalServer
+	}
+
+	if user != nil {
+		slog.Error("User already exist",
+			"email", data.Email)
+
+		return nil, constants.ErrUserAlreadyExist
 	}
 
 	hashedPassword, err := utils.HashPassword(data.Password)
@@ -75,17 +83,17 @@ func (as *accountService) Register(ctx context.Context, data *models.Register) (
 			"err", err,
 		)
 
-		return nil, fmt.Errorf("Unexpected error happened. Please try again!")
+		return nil, constants.ErrInternalServer
 	}
 
 	data.Password = hashedPassword
-	user, err := as.repository.Create(ctx, data)
+	user, err = as.repository.Create(ctx, data)
 	if err != nil {
 		slog.Error("Failed creating user",
 			"err", err,
 		)
 
-		return nil, fmt.Errorf("Unexpected error happened. Please try again!")
+		return nil, constants.ErrInternalServer
 	}
 
 	return user, nil
@@ -100,10 +108,10 @@ func (as *accountService) Login(ctx context.Context, data *models.Login) (*model
 			"err", err,
 		)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fmt.Errorf("User not found")
+			return nil, constants.ErrUserNotFound
 		}
 
-		return nil, fmt.Errorf("Unexpected error happened. Please try again!")
+		return nil, constants.ErrInternalServer
 	}
 
 	isMatch := utils.CheckPasswordHash(data.Password, user.Password)
