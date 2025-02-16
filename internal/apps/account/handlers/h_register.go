@@ -46,6 +46,12 @@ func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": "Request body invalid"})
 	}
 
+	if errs := h.validator.Validate(data); errs != nil && len(errs) > 0 {
+		slog.Error("Request body contain invalid data")
+
+		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": errs})
+	}
+
 	user, err := h.service.Register(ctx, data)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})

@@ -114,7 +114,7 @@ func TestRegister_UserAlreadyExist(t *testing.T) {
 func TestRegister_PasswordTooLong(t *testing.T) {
 	data := models.Register{
 		Email:    "johndoe123@demo.com",
-		Password: "john123!@#awdjwaiodjawodjawodjawodiawjdioawjdoiawjdioawjdioawjdiojaslkdhasjifghasjifghasjkfhsajkd",
+		Password: "1234567812345678123456781234567812345678123456781234567812345678123456789", // exceed 72 char
 	}
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)

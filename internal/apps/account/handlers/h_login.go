@@ -29,7 +29,7 @@ func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.UserContext(), 1*time.Second)
 	defer cancel()
 
-	projectID := c.Get("X-Kaho-Project") // Ambil project ID dari header
+	projectID := c.Get("X-Kaho-Project")
 	if projectID == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "X-Kaho-Project is required"})
 	}
@@ -41,6 +41,12 @@ func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 		)
 
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": "Request body invalid"})
+	}
+
+	if errs := h.validator.Validate(data); errs != nil && len(errs) > 0 {
+		slog.Error("Request body contain invalid data")
+
+		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": errs})
 	}
 
 	user, err := h.service.Login(ctx, data)
