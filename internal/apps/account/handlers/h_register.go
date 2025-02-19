@@ -12,19 +12,20 @@ import (
 
 // RegisterHandler godoc
 //
-//	@Summary	    Register user for a project
+//	@Summary		Register user for a project
 //	@Description	Authenticate user credentials and start a user session.
 //	@Tags			account
-//	@Accept			application/x-www-form-urlencoded
+//	@Accept			application/x-www-form-urlencoded, json
 //	@Produce		json
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
+//	@Param			name			formData	string					true	"User Name"
 //	@Param			email			formData	string					true	"User Email"
 //	@Param			password		formData	string					true	"User Password"
-//	@Param			name		    formData	string					true	"User Name"
-//	@Success		200				{object}	string			        "Login success response"
-//	@Success		201				{object}	models.Session			"Login success response"
+//	@Param			confirmPassword	formData	string					true	"Confirm Password"
+//	@Success		201				{object}	models.Session			"Register success response"
 //	@Failure		400				{object}	map[string]string		"X-Kaho-Project is required"
-//	@Failure		401				{object}	map[string]string		"Invalid credentials"
+//	@Failure		400				{object}	map[string]string		"Password unmatch with confirm password"
+//	@Failure		400				{object}	map[string]string		"Register failed"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
 //	@Router			/account/sessions/register [post]
 func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
@@ -32,9 +33,9 @@ func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.UserContext(), 2*time.Second)
 	defer cancel()
 
-	projectID := c.Get("X-Kaho-Project") // Ambil project ID dari header
+	projectID := c.Get("X-Kaho-Project")
 	if projectID == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "X-Kaho-Project is required"})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "X-Kaho-Project is required"})
 	}
 
 	data := new(models.Register)

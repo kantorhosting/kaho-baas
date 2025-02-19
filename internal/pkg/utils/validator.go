@@ -12,8 +12,11 @@ type Validator struct {
 }
 
 func NewValidator() *Validator {
+	validate := validator.New(validator.WithRequiredStructEnabled())
+	validate.RegisterValidation("no_space", noSpace)
+
 	return &Validator{
-		validate: validator.New(validator.WithRequiredStructEnabled()),
+		validate: validate,
 	}
 }
 
@@ -37,6 +40,8 @@ func (v *Validator) Validate(data any) map[string]string {
 			e = fmt.Errorf("Field '%s' must at least '%v' characters long", v.Field(), v.Param())
 		case "max":
 			e = fmt.Errorf("Field '%s' must not exceed '%v' characters long", v.Field(), v.Param())
+		case "no_space":
+			e = fmt.Errorf("Field '%s' must not contains space character", v.Field())
 		default:
 			e = fmt.Errorf("Field '%s' must satisfy '%s' '%v' criteria", v.Field(), v.Tag(), v.Param())
 		}
@@ -45,4 +50,9 @@ func (v *Validator) Validate(data any) map[string]string {
 	}
 
 	return validationErrs
+}
+
+// INFO: Custom Validation
+func noSpace(fl validator.FieldLevel) bool {
+	return !strings.ContainsRune(fl.Field().String(), ' ')
 }

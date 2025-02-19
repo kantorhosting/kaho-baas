@@ -60,6 +60,12 @@ func (as *accountService) FindUserByEmail(ctx context.Context, email string) (*m
 
 // Create implements AccountService.
 func (as *accountService) Register(ctx context.Context, data *models.Register) (*models.User, error) {
+	if data.Password != data.ConfirmPassword {
+		slog.Error("Password unmatch with confirm password")
+
+		return nil, fmt.Errorf("Password unmatch with confirm password")
+	}
+
 	user, err := as.repository.FindUserByEmail(ctx, data.Email)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		slog.Error("Failed retrieve user",

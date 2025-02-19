@@ -20,7 +20,7 @@ import (
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
 //	@Param			email			formData	string					true	"User Email"
 //	@Param			password		formData	string					true	"User Password"
-//	@Success		200				{object}	string			        "Login success response"
+//	@Success		200				{object}	string					"Login success response"
 //	@Failure		400				{object}	map[string]string		"X-Kaho-Project is required"
 //	@Failure		401				{object}	map[string]string		"Invalid credentials"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
