@@ -15,7 +15,8 @@ import (
 //	@Summary		Register user for a project
 //	@Description	Authenticate user credentials and start a user session.
 //	@Tags			account
-//	@Accept			application/x-www-form-urlencoded, json
+//	@Accept			application/x-www-form-urlencoded
+//	@Accept			json
 //	@Produce		json
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
 //	@Param			name			formData	string					true	"User Name"
@@ -27,7 +28,7 @@ import (
 //	@Failure		400				{object}	map[string]string		"Password unmatch with confirm password"
 //	@Failure		400				{object}	map[string]string		"Register failed"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
-//	@Router			api/v1/register [post]
+//	@Router			/api/v1/register [post]
 func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 	//NOTE: use 2 secs because got timeout when using 1 sec
 	ctx, cancel := context.WithTimeout(c.UserContext(), 2*time.Second)

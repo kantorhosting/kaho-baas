@@ -16,6 +16,7 @@ import (
 //	@Description	Authenticate user credentials and start a user session.
 //	@Tags			account
 //	@Accept			application/x-www-form-urlencoded
+//	@Accept			json
 //	@Produce		json
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
 //	@Param			email			formData	string					true	"User Email"
@@ -24,7 +25,7 @@ import (
 //	@Failure		400				{object}	map[string]string		"X-Kaho-Project is required"
 //	@Failure		401				{object}	map[string]string		"Invalid credentials"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
-//	@Router			api/v1/login [post]
+//	@Router			/api/v1/login [post]
 func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.UserContext(), 1*time.Second)
 	defer cancel()
