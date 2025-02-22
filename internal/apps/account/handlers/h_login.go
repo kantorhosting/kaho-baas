@@ -16,15 +16,16 @@ import (
 //	@Description	Authenticate user credentials and start a user session.
 //	@Tags			account
 //	@Accept			application/x-www-form-urlencoded
+//	@Accept			json
 //	@Produce		json
 //	@Param			X-Kaho-Project	header		string					true	"Project ID"
 //	@Param			email			formData	string					true	"User Email"
 //	@Param			password		formData	string					true	"User Password"
-//	@Success		200				{object}	string			        "Login success response"
+//	@Success		200				{object}	string					"Login success response"
 //	@Failure		400				{object}	map[string]string		"X-Kaho-Project is required"
 //	@Failure		401				{object}	map[string]string		"Invalid credentials"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
-//	@Router			/account/sessions/login [post]
+//	@Router			/api/v1/login [post]
 func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.UserContext(), 1*time.Second)
 	defer cancel()
@@ -49,7 +50,7 @@ func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": errs})
 	}
 
-	user, err := h.service.Login(ctx, data)
+	user, token, err := h.service.Login(ctx, data)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -58,6 +59,14 @@ func (h *accountHandler) LoginHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Session error"})
 	}
+
+	c.Cookie(&fiber.Cookie{
+		Name:     "Token",
+		Value:    token,
+		Expires:  time.Now().Add(1 * time.Hour),
+		HTTPOnly: true,
+		Secure:   true,
+	})
 
 	// Simpan session
 	sess.Set("user_id", user.ID)

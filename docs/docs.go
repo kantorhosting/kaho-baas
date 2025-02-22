@@ -15,11 +15,12 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/account/sessions/login": {
+        "/api/v1/login": {
             "post": {
                 "description": "Authenticate user credentials and start a user session.",
                 "consumes": [
-                    "application/x-www-form-urlencoded"
+                    "application/x-www-form-urlencoded",
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -86,11 +87,12 @@ const docTemplate = `{
                 }
             }
         },
-        "/account/sessions/register": {
+        "/api/v1/register": {
             "post": {
                 "description": "Authenticate user credentials and start a user session.",
                 "consumes": [
-                    "application/x-www-form-urlencoded"
+                    "application/x-www-form-urlencoded",
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
@@ -109,6 +111,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "User Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "User Email",
                         "name": "email",
                         "in": "formData",
@@ -123,36 +132,21 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "User Name",
-                        "name": "name",
+                        "description": "Confirm Password",
+                        "name": "confirmPassword",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "Login success response",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "201": {
-                        "description": "Login success response",
+                        "description": "Register success response",
                         "schema": {
                             "$ref": "#/definitions/models.Session"
                         }
                     },
                     "400": {
-                        "description": "X-Kaho-Project is required",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid credentials",
+                        "description": "Register failed",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
