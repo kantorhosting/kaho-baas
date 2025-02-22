@@ -49,7 +49,7 @@ func TestLogin_NotFound(t *testing.T) {
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
 
-	user, err := service.Login(context.TODO(), &data)
+	user, _, err := service.Login(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrUserNotFound, err)
@@ -66,7 +66,7 @@ func TestLogin_InvalidCred(t *testing.T) {
 		Email: data.Email,
 	})
 
-	user, err := service.Login(context.TODO(), &data)
+	user, _, err := service.Login(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, errors.New("Invalid credentials"), err)
@@ -86,10 +86,11 @@ func TestLogin_Success(t *testing.T) {
 		Password: hashedPassword,
 	})
 
-	user, err := service.Login(context.TODO(), &data)
+	user, token, err := service.Login(context.TODO(), &data)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
+	assert.NotNil(t, token)
 	assert.EqualValues(t, data.Email, user.Email)
 }
 
@@ -106,7 +107,7 @@ func TestRegister_UserAlreadyExist(t *testing.T) {
 	})
 	repository.Mock.On("Create", data).Return(nil)
 
-	user, err := service.Register(context.TODO(), &data)
+	user, _, err := service.Register(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrUserAlreadyExist, err)
@@ -124,7 +125,7 @@ func TestRegister_PasswordTooLong(t *testing.T) {
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
 	repository.Mock.On("Create", data).Return(nil)
 
-	user, err := service.Register(context.TODO(), &data)
+	user, _, err := service.Register(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrInternalServer, err)
@@ -142,7 +143,7 @@ func TestRegister_PasswordUnmatchWithConfirmPassword(t *testing.T) {
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
 	repository.Mock.On("Create", data).Return(nil)
 
-	user, err := service.Register(context.TODO(), &data)
+	user, _, err := service.Register(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, errors.New("Password unmatch with confirm password"), err)
@@ -161,9 +162,10 @@ func TestRegister_Success(t *testing.T) {
 		Email: data.Email,
 	})
 
-	user, err := service.Register(context.TODO(), &data)
+	user, token, err := service.Register(context.TODO(), &data)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
+	assert.NotNil(t, token)
 	assert.EqualValues(t, data.Email, user.Email)
 }

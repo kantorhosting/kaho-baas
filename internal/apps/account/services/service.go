@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 
 	"gorm.io/gorm"
 )
@@ -16,8 +17,8 @@ import (
 type AccountService interface {
 	FindUsers(ctx context.Context) ([]models.User, error)
 	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
-	Register(ctx context.Context, data *models.Register) (*models.User, error)
-	Login(ctx context.Context, data *models.Login) (*models.User, error)
+	Register(ctx context.Context, data *models.Register) (*models.User, string, error)
+	Login(ctx context.Context, data *models.Login) (*models.User, string, error)
 }
 
 type accountService struct {
@@ -59,11 +60,11 @@ func (as *accountService) FindUserByEmail(ctx context.Context, email string) (*m
 }
 
 // Create implements AccountService.
-func (as *accountService) Register(ctx context.Context, data *models.Register) (*models.User, error) {
+func (as *accountService) Register(ctx context.Context, data *models.Register) (*models.User, string, error) {
 	if data.Password != data.ConfirmPassword {
 		slog.Error("Password unmatch with confirm password")
 
-		return nil, fmt.Errorf("Password unmatch with confirm password")
+		return nil, "", fmt.Errorf("Password unmatch with confirm password")
 	}
 
 	user, err := as.repository.FindUserByEmail(ctx, data.Email)
@@ -73,14 +74,14 @@ func (as *accountService) Register(ctx context.Context, data *models.Register) (
 			"err", err,
 		)
 
-		return nil, constants.ErrInternalServer
+		return nil, "", constants.ErrInternalServer
 	}
 
 	if user != nil {
 		slog.Error("User already exist",
-			"email", data.Email)
+			"email", user.Email)
 
-		return nil, constants.ErrUserAlreadyExist
+		return nil, "", constants.ErrUserAlreadyExist
 	}
 
 	hashedPassword, err := utils.HashPassword(data.Password)
@@ -89,7 +90,7 @@ func (as *accountService) Register(ctx context.Context, data *models.Register) (
 			"err", err,
 		)
 
-		return nil, constants.ErrInternalServer
+		return nil, "", constants.ErrInternalServer
 	}
 
 	data.Password = hashedPassword
@@ -99,14 +100,23 @@ func (as *accountService) Register(ctx context.Context, data *models.Register) (
 			"err", err,
 		)
 
-		return nil, constants.ErrInternalServer
+		return nil, "", constants.ErrInternalServer
 	}
 
-	return user, nil
+	token, err := utils.GenerateJWT(os.Getenv("JWT_SECRET"), user.ID, user.Email, user.Name)
+	if err != nil {
+		slog.Error("Failed generating token",
+			"err", err,
+		)
+
+		return nil, "", fmt.Errorf("Your data has been saved but failed generating auth token. Please try signin with your previous data")
+	}
+
+	return user, token, nil
 }
 
 // Login implements AccountService.
-func (as *accountService) Login(ctx context.Context, data *models.Login) (*models.User, error) {
+func (as *accountService) Login(ctx context.Context, data *models.Login) (*models.User, string, error) {
 	user, err := as.repository.FindUserByEmail(ctx, data.Email)
 	if err != nil {
 		slog.Error("Failed retrieve user",
@@ -114,16 +124,25 @@ func (as *accountService) Login(ctx context.Context, data *models.Login) (*model
 			"err", err,
 		)
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, constants.ErrUserNotFound
+			return nil, "", constants.ErrUserNotFound
 		}
 
-		return nil, constants.ErrInternalServer
+		return nil, "", constants.ErrInternalServer
 	}
 
 	isMatch := utils.CheckPasswordHash(data.Password, user.Password)
 	if !isMatch {
-		return nil, fmt.Errorf("Invalid credentials")
+		return nil, "", fmt.Errorf("Invalid credentials")
 	}
 
-	return user, nil
+	token, err := utils.GenerateJWT(os.Getenv("JWT_SECRET"), user.ID, user.Email, user.Name)
+	if err != nil {
+		slog.Error("Failed generating token",
+			"err", err,
+		)
+
+		return nil, "", fmt.Errorf("Your data has been saved but failed generating auth token. Please try signin with your previous data")
+	}
+
+	return user, token, nil
 }

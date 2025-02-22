@@ -27,7 +27,7 @@ import (
 //	@Failure		400				{object}	map[string]string		"Password unmatch with confirm password"
 //	@Failure		400				{object}	map[string]string		"Register failed"
 //	@Failure		500				{object}	map[string]interface{}	"Server error"
-//	@Router			/account/sessions/register [post]
+//	@Router			api/v1/register [post]
 func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 	//NOTE: use 2 secs because got timeout when using 1 sec
 	ctx, cancel := context.WithTimeout(c.UserContext(), 2*time.Second)
@@ -53,7 +53,7 @@ func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": errs})
 	}
 
-	user, err := h.service.Register(ctx, data)
+	user, token, err := h.service.Register(ctx, data)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -63,7 +63,14 @@ func (h *accountHandler) RegisterHandler(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Session error"})
 	}
 
-	// Simpan session
+	c.Cookie(&fiber.Cookie{
+		Name:     "Token",
+		Value:    token,
+		Expires:  time.Now().Add(1 * time.Hour),
+		HTTPOnly: true,
+		Secure:   true,
+	})
+
 	sess.Set("user_id", user.ID)
 	sess.Set("project_id", projectID)
 	sess.Save()
