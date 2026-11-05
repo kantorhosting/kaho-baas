@@ -12,15 +12,29 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Go version: CI uses the same Go version as the Docker image (the golang tag in
+# the Dockerfile, kept up to date by Dependabot), so tests run on the toolchain
+# that builds the released binary. go.mod only declares the minimum version.
+
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Read Go version from Dockerfile
+        id: go
+        run: |
+          version="$(sed -n 's/^FROM golang:\([0-9.]*\)-alpine.*/\1/p' Dockerfile | head -n 1)"
+          if [ -z "$version" ]; then
+            echo "Could not read the Go version from the Dockerfile"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: go.mod
+          go-version: ${{ steps.go.outputs.version }}
+          check-latest: true
 
       - name: Check formatting
         run: |
@@ -36,8 +50,7 @@ jobs:
 
       - name: Check Swagger docs are up to date
         run: |
-          go install github.com/swaggo/swag/cmd/swag@v1.16.4
-          swag init -g cmd/api/main.go
+          make swagger
           if ! git diff --exit-code -- docs; then
             echo "Swagger docs are outdated, run 'make swagger' and commit the result."
             exit 1
@@ -48,9 +61,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Read Go version from Dockerfile
+        id: go
+        run: |
+          version="$(sed -n 's/^FROM golang:\([0-9.]*\)-alpine.*/\1/p' Dockerfile | head -n 1)"
+          if [ -z "$version" ]; then
+            echo "Could not read the Go version from the Dockerfile"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: go.mod
+          go-version: ${{ steps.go.outputs.version }}
+          check-latest: true
 
       # Repository and database tests start Postgres with testcontainers,
       # Docker is available on GitHub-hosted Ubuntu runners

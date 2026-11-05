@@ -20,9 +20,8 @@ Kaho BaaS is licensed under the [AGPL-3.0](LICENSE), and Kantor Hosting also off
 
 ### Prerequisites
 
-- [Go](https://go.dev/dl/) (version from `go.mod`)
+- [Go](https://go.dev/dl/): the version used in the `Dockerfile` (`FROM golang:<version>`) is recommended, `go.mod` declares the minimum
 - [Docker](https://docs.docker.com/get-docker/) with Docker Compose
-- [swag](https://github.com/swaggo/swag) if you change API documentation
 
 ### Run the project
 
@@ -66,6 +65,8 @@ If you add or change an endpoint, update its Swagger annotations and regenerate 
 ```bash
 make swagger
 ```
+
+This runs [swag](https://github.com/swaggo/swag) at the version pinned in `go.mod`, so you do not need to install it yourself.
 
 Commit the generated files in `docs/` together with your change. CI fails if the committed docs differ from the generated ones.
 
