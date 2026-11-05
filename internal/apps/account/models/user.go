@@ -34,7 +34,7 @@ type User struct {
 	Status            bool        `gorm:"type:boolean" json:"status"`
 	Labels            []string    `gorm:"type:text[]" json:"labels"`
 	PasswordUpdate    time.Time   `gorm:"type:timestamp" json:"passwordUpdate"`
-	Email             string      `gorm:"type:varchar(255)" json:"email"`
+	Email             string      `gorm:"type:varchar(255);uniqueIndex" json:"email"`
 	Phone             string      `gorm:"type:varchar(255)" json:"phone"`
 	EmailVerification bool        `gorm:"type:boolean" json:"emailVerification"`
 	PhoneVerification bool        `gorm:"type:boolean" json:"phoneVerification"`
@@ -45,12 +45,13 @@ type User struct {
 }
 
 type Login struct {
-	Email    string `json:"email" form:"email" validate:"required,email"`
-	Password string `json:"password" form:"password" validate:"required,min=8,max=72"`
+	Email    string `json:"email" form:"email" validate:"required,email,no_space"`
+	Password string `json:"password" form:"password" validate:"required,min=8,max=72,no_space"`
 }
 
 type Register struct {
-	Email    string `json:"email" form:"email" validate:"required,email"`
-	Password string `json:"password" form:"password" validate:"required,min=8,max=72"`
-	Name     string `json:"name" form:"name" validate:"required"`
+	Email           string `json:"email" form:"email" validate:"required,email,no_space"`
+	Password        string `json:"password" form:"password" validate:"required,min=8,max=72,no_space"`
+	ConfirmPassword string `json:"confirmPassword" form:"confirmPassword" validate:"required,min=8,max=72,no_space"`
+	Name            string `json:"name" form:"name" validate:"required"`
 }

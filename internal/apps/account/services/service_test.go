@@ -49,7 +49,7 @@ func TestLogin_NotFound(t *testing.T) {
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
 
-	user, err := service.Login(context.TODO(), &data)
+	user, _, err := service.Login(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrUserNotFound, err)
@@ -66,7 +66,7 @@ func TestLogin_InvalidCred(t *testing.T) {
 		Email: data.Email,
 	})
 
-	user, err := service.Login(context.TODO(), &data)
+	user, _, err := service.Login(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, errors.New("Invalid credentials"), err)
@@ -86,17 +86,20 @@ func TestLogin_Success(t *testing.T) {
 		Password: hashedPassword,
 	})
 
-	user, err := service.Login(context.TODO(), &data)
+	user, token, err := service.Login(context.TODO(), &data)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
+	assert.NotNil(t, token)
 	assert.EqualValues(t, data.Email, user.Email)
 }
 
 func TestRegister_UserAlreadyExist(t *testing.T) {
 	data := models.Register{
-		Email:    "john123@demo.com",
-		Password: "john123!@#",
+		Name:            "test user",
+		Email:           "john123@demo.com",
+		Password:        "john123!@#",
+		ConfirmPassword: "john123!@#",
 	}
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(models.User{
@@ -104,7 +107,7 @@ func TestRegister_UserAlreadyExist(t *testing.T) {
 	})
 	repository.Mock.On("Create", data).Return(nil)
 
-	user, err := service.Register(context.TODO(), &data)
+	user, _, err := service.Register(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrUserAlreadyExist, err)
@@ -113,24 +116,45 @@ func TestRegister_UserAlreadyExist(t *testing.T) {
 
 func TestRegister_PasswordTooLong(t *testing.T) {
 	data := models.Register{
-		Email:    "johndoe123@demo.com",
-		Password: "1234567812345678123456781234567812345678123456781234567812345678123456789", // exceed 72 char
+		Name:            "test user",
+		Email:           "johndoe123@demo.com",
+		Password:        "1234567812345678123456781234567812345678123456781234567812345678123456789", // exceed 72 char
+		ConfirmPassword: "1234567812345678123456781234567812345678123456781234567812345678123456789", // exceed 72 char
 	}
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
 	repository.Mock.On("Create", data).Return(nil)
 
-	user, err := service.Register(context.TODO(), &data)
+	user, _, err := service.Register(context.TODO(), &data)
 
 	assert.NotNil(t, err)
 	assert.EqualValues(t, constants.ErrInternalServer, err)
 	assert.Nil(t, user)
 }
 
+func TestRegister_PasswordUnmatchWithConfirmPassword(t *testing.T) {
+	data := models.Register{
+		Name:            "test user",
+		Email:           "johndoe12a3@demo.com",
+		Password:        "1234567812345678123456781234567812345678123456781234567812345678123456789", // exceed 72 char
+		ConfirmPassword: "234567812345678123456781234567812345678123456781234567812345678123456789",
+	}
+
+	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
+	repository.Mock.On("Create", data).Return(nil)
+
+	user, _, err := service.Register(context.TODO(), &data)
+
+	assert.NotNil(t, err)
+	assert.EqualValues(t, errors.New("Password unmatch with confirm password"), err)
+	assert.Nil(t, user)
+}
 func TestRegister_Success(t *testing.T) {
 	data := models.Register{
-		Email:    "johndoe123@demo.com",
-		Password: "johndoes123!@#",
+		Name:            "john doe",
+		Email:           "johndoe123@demo.com",
+		Password:        "johndoes123!@#",
+		ConfirmPassword: "johndoes123!@#",
 	}
 
 	repository.Mock.On("FindUserByEmail", data.Email).Return(nil)
@@ -138,9 +162,10 @@ func TestRegister_Success(t *testing.T) {
 		Email: data.Email,
 	})
 
-	user, err := service.Register(context.TODO(), &data)
+	user, token, err := service.Register(context.TODO(), &data)
 
 	assert.Nil(t, err)
 	assert.NotNil(t, user)
+	assert.NotNil(t, token)
 	assert.EqualValues(t, data.Email, user.Email)
 }

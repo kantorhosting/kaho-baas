@@ -24,7 +24,8 @@ func (s *FiberServer) RegisterFiberRoutes() {
 
 	s.App.Get("/docs/*", swagger.HandlerDefault)
 
-	v1 := s.App.Group("/v1")
+	api := s.App.Group("/api")
+	v1 := api.Group("/v1")
 
 	// Register routes
 	accountroutes.RegisterRoutes(v1, s.gormDB.DB(), s.sessionmanager)
