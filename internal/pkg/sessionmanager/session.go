@@ -2,6 +2,7 @@ package sessionmanager
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -9,6 +10,7 @@ import (
 
 // SessionManager struct
 type SessionManager struct {
+	mu    sync.Mutex
 	cache map[string]*session.Store
 }
 
@@ -21,6 +23,10 @@ func NewSessionManager() *SessionManager {
 
 // GetSessionInstance mengembalikan instance session berdasarkan Project ID
 func (s *SessionManager) GetSessionInstance(projectID string) *session.Store {
+	// Requests are handled concurrently, guard the cache from concurrent map writes
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
 	// Cek apakah sudah ada session untuk project ini
 	if sess, exists := s.cache[projectID]; exists {
 		return sess

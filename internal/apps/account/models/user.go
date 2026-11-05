@@ -27,7 +27,7 @@ type User struct {
 	UpdatedAt         time.Time   `gorm:"column:$updatedAt" json:"$updatedAt"`
 	DeletedAt         time.Time   `gorm:"column:$deletedAt" json:"$deletedAt"`
 	Name              string      `gorm:"type:varchar(255)" json:"name"`
-	Password          string      `gorm:"type:text" json:"password"`
+	Password          string      `gorm:"type:text" json:"-"`
 	Hash              string      `gorm:"type:varchar(255)" json:"hash"`
 	HashOptions       HashOptions `gorm:"embedded" json:"hashOptions"`
 	Registration      time.Time   `gorm:"type:timestamp" json:"registration"`

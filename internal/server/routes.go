@@ -44,5 +44,10 @@ func (s *FiberServer) HelloWorldHandler(c *fiber.Ctx) error {
 }
 
 func (s *FiberServer) healthHandler(c *fiber.Ctx) error {
-	return c.JSON(s.db.Health())
+	stats := s.db.Health()
+	if stats["status"] != "up" {
+		return c.Status(fiber.StatusServiceUnavailable).JSON(stats)
+	}
+
+	return c.JSON(stats)
 }
