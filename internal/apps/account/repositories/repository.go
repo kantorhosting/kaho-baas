@@ -36,9 +36,12 @@ func (as *accountRepository) FindUsers(ctx context.Context) ([]models.User, erro
 func (as *accountRepository) FindUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	var user models.User
 
-	result := as.db.WithContext(ctx).Debug().First(&user)
+	result := as.db.WithContext(ctx).Debug().Where("email = ?", email).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
-	return &user, result.Error
+	return &user, nil
 }
 
 // Create implements AccountService.
