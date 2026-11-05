@@ -57,6 +57,8 @@ go vet ./...
 go test -race ./...
 ```
 
+The same checks run automatically in CI on every Pull Request, together with a Docker build and a check that the Swagger docs are up to date. A Pull Request can only be merged when CI passes.
+
 ### API documentation
 
 If you add or change an endpoint, update its Swagger annotations and regenerate the docs:
@@ -65,7 +67,7 @@ If you add or change an endpoint, update its Swagger annotations and regenerate 
 make swagger
 ```
 
-Commit the generated files in `docs/` together with your change.
+Commit the generated files in `docs/` together with your change. CI fails if the committed docs differ from the generated ones.
 
 ## Project structure
 
