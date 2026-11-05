@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/kantorhosting/kaho-baas/blob/main/SECURITY.md
+    about: Please report security issues privately by email, not as a public issue.
+  - name: Questions and discussion
+    url: https://discord.gg/FsWEpr7YzD
+    about: Ask questions and chat with the community on Discord.
