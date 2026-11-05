@@ -1,3 +1,12 @@
 {
-   "signedContributors": []
+  "signedContributors": [
+    {
+      "name": "dimasanwaraziz",
+      "id": 50611785,
+      "comment_id": 6653074012,
+      "created_at": "2026-11-05T08:11:58Z",
+      "repoId": 929361423,
+      "pullRequestNo": 17
+    }
+  ]
 }
