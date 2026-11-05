@@ -62,16 +62,38 @@ We welcome contributions! To contribute:
 
 ## 🛠 Configuration
 
-Environment variables for configuring Kaho BaaS:
+Copy `.env.example` to `.env` and adjust the values:
 ```env
 PORT=8080
 APP_ENV=local
-BLUEPRINT_DB_HOST=psql_bp
-BLUEPRINT_DB_PORT=5432
-BLUEPRINT_DB_DATABASE=blueprint
-BLUEPRINT_DB_USERNAME=melkey
-BLUEPRINT_DB_PASSWORD=password1234
-BLUEPRINT_DB_SCHEMA=public
+DB_HOST=localhost
+DB_PORT=5432
+DB_DATABASE=kaho
+DB_USERNAME=kaho
+DB_PASSWORD=change-me
+DB_SCHEMA=public
+DB_EXPOSE_PORT=5432
+```
+
+When running with Docker Compose, `DB_HOST` and `DB_PORT` are set automatically to point at the `db` service.
+
+---
+
+## 🐳 Docker
+
+**Development** (hot reload with [air](https://github.com/air-verse/air), source code mounted into the container, Postgres exposed on `DB_EXPOSE_PORT`):
+```bash
+make docker-dev
+```
+
+**Production** (static binary on a minimal Alpine image, running as a non-root user, Postgres only reachable inside the Docker network):
+```bash
+make docker-run
+```
+
+Stop the containers:
+```bash
+make docker-down
 ```
 
 ---

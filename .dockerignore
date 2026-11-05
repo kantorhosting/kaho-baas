@@ -1,0 +1,21 @@
+.git
+.github
+.gitignore
+.dockerignore
+.vscode
+.idea
+.DS_Store
+
+# Secrets, pass them via environment variables instead
+.env
+.env.*
+
+# Local build output
+main
+tmp/
+build-errors.log
+*.test
+*.out
+
+Dockerfile
+docker-compose*.yml
