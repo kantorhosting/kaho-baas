@@ -70,12 +70,15 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch docker-run docker-dev docker-down itest
+.PHONY: all build run test clean watch docker-run docker-dev docker-down itest swagger swagger-fmt
+
+# Run swag at the version pinned in go.mod, so local and CI output match
+SWAG = go run github.com/swaggo/swag/cmd/swag@$(shell go list -m -f '{{.Version}}' github.com/swaggo/swag)
 
 swagger:
 	@echo "Generating Swagger documentation..."
-	@swag init -g cmd/api/main.go
+	@$(SWAG) init -g cmd/api/main.go
 
 swagger-fmt:
 	@echo "Formatting Swagger documentation..."
-	@swag fmt
+	@$(SWAG) fmt
