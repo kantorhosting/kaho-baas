@@ -12,7 +12,7 @@ build:
 # Run the application
 run:
 	@go run cmd/api/main.go
-# Create DB container
+# Run app (production image) and DB containers
 docker-run:
 	@if docker compose up --build 2>/dev/null; then \
 		: ; \
@@ -21,7 +21,16 @@ docker-run:
 		docker-compose up --build; \
 	fi
 
-# Shutdown DB container
+# Run app (hot reload with air) and DB containers for development
+docker-dev:
+	@if docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build 2>/dev/null; then \
+		: ; \
+	else \
+		echo "Falling back to Docker Compose V1"; \
+		docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build; \
+	fi
+
+# Shutdown app and DB containers
 docker-down:
 	@if docker compose down 2>/dev/null; then \
 		: ; \
@@ -61,7 +70,7 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch docker-run docker-down itest
+.PHONY: all build run test clean watch docker-run docker-dev docker-down itest
 
 swagger:
 	@echo "Generating Swagger documentation..."

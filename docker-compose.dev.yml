@@ -1,0 +1,23 @@
+# Development override, use together with docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+services:
+  app:
+    build:
+      target: dev
+    restart: "no"
+    # File events from bind mounts are unreliable on Docker Desktop, poll instead
+    command: ["air", "-c", ".air.toml", "-build.poll", "true"]
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+    volumes:
+      - .:/app
+      - go_mod_cache:/go/pkg/mod
+      - go_build_cache:/root/.cache/go-build
+
+  db:
+    ports:
+      - ${DB_EXPOSE_PORT:-5432}:5432
+
+volumes:
+  go_mod_cache:
+  go_build_cache:
