@@ -1,15 +1,18 @@
 # Kaho BaaS - Open-Source Backend as a Service
 
-Kaho BaaS is a high-performance, open-source **Backend as a Service (BaaS)** built with Go. It provides authentication, database management, real-time sync, and serverless functions—so you can focus on building great applications while Kaho handles the backend. Scalable, flexible, and cloud-ready! 🚀
+Kaho BaaS is an open-source **Backend as a Service (BaaS)** built with Go. Our goal is to provide authentication, databases, file storage, realtime, functions and site hosting behind one API, so you can focus on building your application while Kaho handles the backend. Kaho is designed to be **easy to deploy with Docker** and **stateless**, so it scales by simply running more containers.
 
-## ✨ Features
+> **Early development:** Kaho BaaS is not ready for production use yet. APIs may change without notice.
 
-✅ **Authentication & Authorization** – Secure user authentication with JWT, OAuth, and more.  
-✅ **Database Management** – Scalable and easy-to-use database solutions.  
-✅ **Real-Time & Offline Sync** – Keep your data in sync across devices seamlessly.  
-✅ **Serverless Functions** – Deploy custom backend logic without managing servers.  
-✅ **REST & GraphQL API** – Access your data effortlessly with modern API support.  
-✅ **Self-Hosted & Cloud Ready** – Deploy anywhere, from local setups to cloud platforms.  
+## ✨ Status
+
+**Available now:**
+
+- ✅ **Email and password accounts** – register and log in users per project
+- ✅ **Docker setup** – development with hot reload, and a minimal production image
+- ✅ **API documentation** – Swagger UI at `/docs`
+
+**Planned:** stateless sessions, complete authentication (OAuth, MFA, teams), databases, file storage, realtime, functions and Netlify-like site hosting. See the [Roadmap](ROADMAP.md) for details and priorities.
 
 ---
 

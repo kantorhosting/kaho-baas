@@ -7,6 +7,7 @@ By participating in this project you agree to follow our [Code of Conduct](CODE_
 ## Before you start
 
 - **Security issues:** do not open a public issue. Follow the [Security Policy](SECURITY.md) instead.
+- **What to work on:** the [Roadmap](ROADMAP.md) lists our priorities and planned milestones.
 - **Bugs and features:** search [existing issues](https://github.com/kantorhosting/kaho-baas/issues) first. If none exists, open one using the issue templates.
 - **Larger changes:** open an issue to discuss the approach before writing code, so your work is not wasted if the direction does not fit the project.
 
