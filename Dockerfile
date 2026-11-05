@@ -21,7 +21,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/main ./cmd/api
 
 # Production: static binary on a minimal image, running as non-root user
-FROM alpine:3.20 AS prod
+FROM alpine:3.24 AS prod
 
 RUN apk add --no-cache ca-certificates tzdata \
     && addgroup -S app \
