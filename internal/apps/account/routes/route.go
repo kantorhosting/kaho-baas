@@ -18,5 +18,6 @@ func RegisterRoutes(router fiber.Router, db *gorm.DB, sessionManager *sessionman
 
 	accountGroup.Get("/", accountHandler.AccountHomeHandler)
 	accountGroup.Post("/sessions/login", accountHandler.LoginHandler)
+	accountGroup.Delete("/sessions/logout", accountHandler.LogoutHandler)
 	accountGroup.Post("/sessions/register", accountHandler.RegisterHandler)
 }

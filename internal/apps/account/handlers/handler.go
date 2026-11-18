@@ -11,6 +11,7 @@ import (
 type AccountHandler interface {
 	AccountHomeHandler(c *fiber.Ctx) error
 	LoginHandler(c *fiber.Ctx) error
+	LogoutHandler(c *fiber.Ctx) error
 	RegisterHandler(c *fiber.Ctx) error
 }
 
